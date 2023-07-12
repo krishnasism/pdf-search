@@ -67,13 +67,6 @@ services:
       - heissdocs-network
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    command: >
-      /bin/bash -c '
-        /usr/local/bin/docker-entrypoint.sh
-        elasticsearch
-        -E "bootstrap.memory_lock=true"
-        && sleep 30
-        && curl -X PUT "http://elasticsearch:9200/documents"'
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
