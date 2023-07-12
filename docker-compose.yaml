@@ -68,7 +68,7 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
     command: >
-      bash -c '
+      /bin/bash -c '
         /usr/local/bin/docker-entrypoint.sh
         elasticsearch
         -E "bootstrap.memory_lock=true"
