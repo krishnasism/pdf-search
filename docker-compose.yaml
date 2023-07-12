@@ -11,6 +11,7 @@ services:
       - "db"
     networks:
       - heissdocs-network
+    network_mode: bridge
 
   db:
     image: postgres
@@ -21,6 +22,7 @@ services:
       POSTGRES_DB: heissdocs
     networks:
       - heissdocs-network
+    network_mode: bridge
     ports:
       - '5432:5432'
     volumes:
@@ -30,6 +32,7 @@ services:
     image: softwaremill/elasticmq
     networks:
       - heissdocs-network
+    network_mode: bridge
     ports:
       - "9324:9324"
       - "9325:9325"
@@ -38,6 +41,7 @@ services:
     build: ./engine/
     networks:
       - heissdocs-network
+    network_mode: bridge
     depends_on:
       - "sqs"
 
@@ -47,6 +51,7 @@ services:
       - "9000:9000"
     networks:
       - heissdocs-network
+    network_mode: bridge
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
@@ -65,10 +70,9 @@ services:
       - '9300:9300'
     networks:
       - heissdocs-network
+    network_mode: bridge
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   frontend:
     build: ./frontend/
@@ -76,6 +80,7 @@ services:
       - "80:80"
     networks:
       - heissdocs-network
+    network_mode: bridge
 
 volumes:
   minio_data:
