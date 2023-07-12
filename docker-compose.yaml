@@ -9,6 +9,8 @@ services:
       - "sqs"
       - "parse-engine"
       - "db"
+    networks:
+      - heissdocs-network
 
   db:
     image: postgres
@@ -17,6 +19,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: heissdocs
+    networks:
+      - heissdocs-network
     ports:
       - '5432:5432'
     volumes:
@@ -24,12 +28,16 @@ services:
 
   sqs:
     image: softwaremill/elasticmq
+    networks:
+      - heissdocs-network
     ports:
       - "9324:9324"
       - "9325:9325"
 
   parse-engine:
     build: ./engine/
+    networks:
+      - heissdocs-network
     depends_on:
       - "sqs"
 
@@ -37,6 +45,8 @@ services:
     image: minio/minio
     ports:
       - "9000:9000"
+    networks:
+      - heissdocs-network
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
@@ -53,6 +63,8 @@ services:
     ports:
       - '9200:9200'
       - '9300:9300'
+    networks:
+      - heissdocs-network
     volumes:
       - esdata:/usr/share/elasticsearch/data
     command: >
@@ -61,10 +73,20 @@ services:
         elasticsearch
         -E "bootstrap.memory_lock=true"
         && sleep 30
-        && curl -X PUT "http://localhost:9200/documents"'
+        && curl -X PUT "http://elasticsearch:9200/documents"'
     extra_hosts:
       - "host.docker.internal:host-gateway"
-        
+
+  frontend:
+    build: ./frontend/
+    ports:
+      - "80:80"
+    networks:
+      - heissdocs-network
+
 volumes:
   minio_data:
   esdata:
+
+networks:
+  heissdocs-network:
