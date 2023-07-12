@@ -37,6 +37,7 @@ async def s3_parsing_job(
     viewer_bucket_name: Annotated[str, Form()],
     authenticated: bool = Depends(verify_token),
 ):
+    return JSONResponse(content={"message": "Upload disabled in demo"}, status_code=201)
     try:
         document_id = await prepare_s3_job(
             source_bucket_name,

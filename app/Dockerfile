@@ -14,9 +14,6 @@ RUN pip install pipenv
 
 RUN pipenv install --system --deploy --ignore-pipfile
 
-RUN python -m nltk.downloader punkt
-RUN python -m nltk.downloader stopwords
-
 COPY . /code/
 
 EXPOSE 8000
